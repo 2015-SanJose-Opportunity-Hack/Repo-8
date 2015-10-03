@@ -14,4 +14,4 @@ Research indicates that, even with the abundance of available health monitoring 
 
  
 
-This ground reality motivates us to build an easy-to-use emergency monitoring and reporting system that can connect the senior citizens and there care takers remotely. By just minimum intervention from the senior citizens, this system attempts to automatically report the patient’s day-to-day activities and emergency information so that the responsible health providers can take proper urgent actions for the aged people.
+This ground reality motivates us to build a novel, easy-to-use emergency monitoring and reporting system that can connect the senior citizens and there care takers remotely. By just minimum intervention from the senior citizens, this system attempts to automatically report the patient’s day-to-day activities and emergency information so that the responsible health providers can take proper urgent actions for the aged people.
