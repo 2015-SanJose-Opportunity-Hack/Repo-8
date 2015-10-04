@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
         seniorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SeniorDetailActivity.class);
+
                 new SeniorData().execute();
-                startActivity(intent);
+
             }
         });
 
@@ -135,23 +135,28 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonObject = NodejsCall.post(url, token);
             String url2 = "/caretaker/" + Me.getInstance().getCareTaker() + "/lovedOne/" + Me.getInstance().getPid();
 
-            JSONObject jsonObject2 = NodejsCall.get(url);
-            return jsonObject;
+            JSONObject jsonObject2 = NodejsCall.get(url2);
+            return jsonObject2;
 
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             try {
-                Me.getInstance().setName(jsonObject.getString("name"));
-                Me.getInstance().setAge(jsonObject.getString("age"));
-                Me.getInstance().setHeight(jsonObject.getString("height"));
-                Me.getInstance().setPhone(jsonObject.getString("seniorphone"));
-                Me.getInstance().setAddress(jsonObject.getString("address"));
-                Me.getInstance().setType("Senior");
+                JSONObject person = jsonObject.getJSONObject("response");
+                Me.getInstance().setName(person.getString("name"));
+                Me.getInstance().setAge(person.getString("age"));
+                Me.getInstance().setHeight(person.getString("height"));
+                Me.getInstance().setPhone(person.getString("seniorphone"));
+                Me.getInstance().setAddress(person.getString("address"));
+                Me.getInstance().setType("senior");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Intent intent = new Intent(MainActivity.this, SeniorDetailActivity.class);
+            startActivity(intent);
+
         }
     }
 //    @Override

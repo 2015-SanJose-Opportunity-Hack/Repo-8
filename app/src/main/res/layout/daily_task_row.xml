@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:text="Done"
         android:padding="10dp"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:background="#3D88EC"
         android:textColor="#FFFFFF"
         />

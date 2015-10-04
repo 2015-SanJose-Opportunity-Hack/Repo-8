@@ -9,7 +9,7 @@
         android:background="@drawable/rectangle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="25dp" />
     <View
         android:id="@+id/neckView"
         android:layout_width="50dp"

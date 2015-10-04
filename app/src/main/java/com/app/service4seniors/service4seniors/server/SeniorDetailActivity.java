@@ -38,7 +38,7 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
     private Sensor senAccelerometer;
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 1000;
     private String pid;
 
     private ImageButton diseaseButton;
@@ -57,7 +57,11 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
         diseaseButton = (ImageButton) findViewById(R.id.disease_button);
         dailyTasks = (ListView) findViewById(R.id.daily_tasks);
         taskList = new ArrayList<>();
-        pid = getIntent().getStringExtra("pid");
+        if(!Me.getInstance().getType().equals("senior")) {
+            pid = getIntent().getStringExtra("pid");
+        } else {
+            pid = Me.getInstance().getPid();
+        }
 
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -134,8 +138,10 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(!Me.getInstance().getType().equals("senior")) {
-            return;
+        if(!(Me.getInstance().getType()==null)) {
+            if (!Me.getInstance().getType().equals("senior")) {
+                return;
+            }
         }
         Sensor mySensor = sensorEvent.sensor;
 
