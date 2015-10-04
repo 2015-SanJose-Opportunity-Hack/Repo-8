@@ -61,7 +61,7 @@ public class NotificationActivity extends AppCompatActivity {
                             notificationArray.getJSONObject(i).getString("date"),
                             notificationArray.getJSONObject(i).getString("sender"),
                             "",
-                            notificationArray.getJSONObject(i).getString("type"));
+                            "");
 
                     notificationList.add(notification);
                 }

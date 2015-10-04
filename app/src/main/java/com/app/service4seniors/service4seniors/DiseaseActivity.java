@@ -14,16 +14,20 @@ import android.widget.Toast;
 
 import com.app.service4seniors.service4seniors.senior.Me;
 import com.app.service4seniors.service4seniors.server.NodejsCall;
+import com.app.service4seniors.service4seniors.task.DiseaseAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class DiseaseActivity extends AppCompatActivity {
 
     private ListView diseaseListView;
+    private List<String> diseaseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +41,16 @@ public class DiseaseActivity extends AppCompatActivity {
                 if(Me.getInstance().getType().equals("senior")) {
                     String disease = diseaseListView.getItemAtPosition(position).toString();
                     Toast.makeText(DiseaseActivity.this, "Sent!!", Toast.LENGTH_LONG).show();
-
+                    new DiseaseSend().execute(disease);
                 }
             }
         });
+
+        String[] myResArray = getResources().getStringArray(R.array.diseases);
+        diseaseList = Arrays.asList(myResArray);
+
+        DiseaseAdapter diseaseAdapter = new DiseaseAdapter(this, diseaseList);
+        diseaseListView.setAdapter(diseaseAdapter);
 
     }
 

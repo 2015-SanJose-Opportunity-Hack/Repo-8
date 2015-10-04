@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.app.service4seniors.service4seniors.DiseaseActivity;
 import com.app.service4seniors.service4seniors.R;
 import com.app.service4seniors.service4seniors.senior.Me;
 import com.app.service4seniors.service4seniors.senior.SeniorPainActivity;
@@ -69,7 +70,8 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
         diseaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Call disease list
+                Intent intent = new Intent(SeniorDetailActivity.this, DiseaseActivity.class);
+                startActivity(intent);
 
             }
         });
