@@ -6,6 +6,7 @@ var PersonSchema = new mongoose.Schema({
 	phone: {type: String},
 	email: {type: String},
 	age: {type: String},
+	type: {type: String},
 	height: {type: Number},
 	weight: {type: Number},
 	address: {type: String},
