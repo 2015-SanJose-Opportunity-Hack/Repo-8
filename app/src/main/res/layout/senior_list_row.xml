@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/senior_row"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="25px">
+
+    <ImageView
+        android:id="@+id/senior_pic"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:src="@drawable/common_ic_googleplayservices"/>
+
+    <TextView
+        android:id="@+id/senior_name"
+        android:layout_marginTop="45px"
+        android:layout_marginLeft="45px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Matt Daemon"
+        android:textSize="30sp"/>
+
+    <ImageView
+        android:id="@+id/senior_notification"
+        android:layout_marginTop="35px"
+        android:layout_marginLeft="45px"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:src="@drawable/notification_icon"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/phone_button"
+        android:layout_marginTop="35px"
+        android:layout_marginLeft="45px"
+        android:src="@drawable/phoneicon"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+
+</LinearLayout>
