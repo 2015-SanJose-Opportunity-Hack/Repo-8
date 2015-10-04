@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/upper"
         android:layout_width="match_parent"
-        android:layout_height="350px">
+        android:layout_height="650px">
 
         <ImageButton
             android:id="@+id/body_pain_button"
@@ -33,7 +33,7 @@
             android:adjustViewBounds="true"
             android:background="#FFFFFF"
             android:scaleType="fitCenter"
-            android:padding="12dp"
+            android:padding="10dp"
             />
 
     </LinearLayout>

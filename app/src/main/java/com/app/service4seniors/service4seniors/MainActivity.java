@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         caretakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Me.getInstance().setType("Caretaker");
                 Intent intent = new Intent(MainActivity.this, SeniorListActivity.class);
                 startActivity(intent);
             }
@@ -147,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 Me.getInstance().setHeight(jsonObject.getString("height"));
                 Me.getInstance().setPhone(jsonObject.getString("seniorphone"));
                 Me.getInstance().setAddress(jsonObject.getString("address"));
+                Me.getInstance().setType("Senior");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

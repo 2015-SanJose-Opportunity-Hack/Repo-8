@@ -38,6 +38,7 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
     private static final int SHAKE_THRESHOLD = 800;
+    private String pid;
 
     private ImageButton diseaseButton;
     private ListView dailyTasks;
@@ -55,6 +56,7 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
         diseaseButton = (ImageButton) findViewById(R.id.disease_button);
         dailyTasks = (ListView) findViewById(R.id.daily_tasks);
         taskList = new ArrayList<>();
+        pid = getIntent().getStringExtra("pid");
 
         imgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -71,13 +73,15 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
 
             }
         });
+
+        new DailyTask().execute();
     }
 
     private class DailyTask extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            String url = "/lovedOne/" + Me.getInstance().getPid() + "/tasks";
+            String url = "/lovedOne/" + pid + "/tasks";
             JSONObject jsonObject = NodejsCall.get(url);
             return jsonObject;
         }
@@ -128,6 +132,9 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        if(!Me.getInstance().getType().equals("senior")) {
+            return;
+        }
         Sensor mySensor = sensorEvent.sensor;
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -157,26 +164,31 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
 
     }
 
-    private class Emergency extends AsyncTask<Void, Void, Void> {
+    private class Emergency extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             String url = "/lovedOne/" + Me.getInstance().getPid() + "/emergency";
             JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject1 = null;
             try {
                 jsonObject.put("token", Me.getInstance().getPid());
                 jsonObject.put("description", "Emergency");
                 jsonObject.put("severity", "Highest");
                 jsonObject.put("date", new Date().toString());
 
-                NodejsCall.post(url, jsonObject);
+                jsonObject1 = NodejsCall.post(url, jsonObject);
 
-                Toast.makeText(SeniorDetailActivity.this, "Emergency services called", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return jsonObject1;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            Toast.makeText(SeniorDetailActivity.this, "Emergency services called", Toast.LENGTH_SHORT).show();
         }
 
 

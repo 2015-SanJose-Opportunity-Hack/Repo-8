@@ -3,23 +3,25 @@ package com.app.service4seniors.service4seniors.server;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,8 +41,7 @@ public class NodejsCall {
             url = new URL(urlString.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
+            //urlConnection.setDoInput(true);
             urlConnection.connect();
             inStream = urlConnection.getInputStream();
             BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
@@ -69,63 +70,61 @@ public class NodejsCall {
     }
 
     public static JSONObject post(String path, JSONObject jsonObject) {
-        HttpURLConnection urlConnection = null;
-        JSONObject jsonObjectReturn = null;
+        //can catch a variety of wonderful things
+        InputStream is = null;
+        HttpURLConnection conn = null;
+        OutputStream os = null;
         try {
-            // create connection
-            URL urlToRequest = new URL(SERVER + path);
-            urlConnection = (HttpURLConnection) urlToRequest.openConnection();
-            urlConnection.setConnectTimeout(5000);
+            //constants
+            URL url = new URL(SERVER + path);
+            String message = new JSONObject().toString();
 
-            // handle POST parameters
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /*milliseconds*/);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setFixedLengthStreamingMode(message.getBytes().length);
 
+            //make some HTTP header nicety
+            conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+            conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
 
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setFixedLengthStreamingMode(
-                        jsonObject.length());
-                urlConnection.setRequestProperty("Content-Type",
-                        "application/json");
+            //open
+            conn.connect();
 
-                //send the POST out
-                PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
-                out.print(jsonObject);
-                out.close();
+            //setup send
+            os = new BufferedOutputStream(conn.getOutputStream());
+            os.write(message.getBytes());
+            //clean up
+            os.flush();
 
-
-            // handle issues
-            int statusCode = urlConnection.getResponseCode();
-            if (statusCode != HttpURLConnection.HTTP_OK) {
-                // throw some exception
-            }
-
-            // read output (only for GET)
-
-                InputStream in =
-                        new BufferedInputStream(urlConnection.getInputStream());
-
-            jsonObjectReturn = new JSONObject(in.toString());
-
-
-
+            //do somehting with response
+            is = conn.getInputStream();
         } catch (MalformedURLException e) {
-            // handle invalid URL
-        } catch (SocketTimeoutException e) {
-            // hadle timeout
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            // handle I/0
-        } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+            //clean up
+            try {
+                os.close();
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            conn.disconnect();
         }
 
-        return jsonObject;
+        try {
+            return new JSONObject(is.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-
-
+        return null;
     }
-
 }
