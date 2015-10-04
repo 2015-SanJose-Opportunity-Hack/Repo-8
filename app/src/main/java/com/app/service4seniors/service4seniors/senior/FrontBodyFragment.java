@@ -115,7 +115,7 @@ public class FrontBodyFragment extends Fragment  {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             painlevel = adapter.getItem(which);
-
+                            new PainPoint().execute();
                         }
                     });
 
@@ -158,7 +158,6 @@ public class FrontBodyFragment extends Fragment  {
     public void touchDown(View v){
         //touch down happened
         int resId;
-        String bodyPart;
         switch(v.getId()){
             case R.id.frontHeadView:
                 bodyPart = "Head Pain";

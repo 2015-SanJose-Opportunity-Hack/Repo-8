@@ -71,13 +71,16 @@ public class NodejsCall {
 
     public static JSONObject post(String path, JSONObject jsonObject) {
         //can catch a variety of wonderful things
+        if(jsonObject == null) {
+            jsonObject = new JSONObject();
+        }
         InputStream is = null;
         HttpURLConnection conn = null;
         OutputStream os = null;
         try {
             //constants
             URL url = new URL(SERVER + path);
-            String message = new JSONObject().toString();
+            String message = jsonObject.toString();
 
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /*milliseconds*/);
@@ -113,7 +116,7 @@ public class NodejsCall {
             try {
                 os.close();
                 is.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             conn.disconnect();

@@ -38,7 +38,7 @@ public class DiseaseActivity extends AppCompatActivity {
         diseaseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(Me.getInstance().getType().equals("senior")) {
+                if (Me.getInstance().getType().equals("senior")) {
                     String disease = diseaseListView.getItemAtPosition(position).toString();
                     Toast.makeText(DiseaseActivity.this, "Sent!!", Toast.LENGTH_LONG).show();
                     new DiseaseSend().execute(disease);
@@ -62,10 +62,10 @@ public class DiseaseActivity extends AppCompatActivity {
 
             JSONObject jsonObject = new JSONObject();
             try {
-            jsonObject.put("token", Me.getInstance().getPid());
-            jsonObject.put("disease", params[0]);
-            jsonObject.put("severity", "Medium");
-
+                jsonObject.put("token", Me.getInstance().getPid());
+                jsonObject.put("description", params[0]);
+                jsonObject.put("severity", "Medium");
+                jsonObject.put("type", "disease ");
                 jsonObject.put("date", new Date());
             } catch (JSONException e) {
                 e.printStackTrace();

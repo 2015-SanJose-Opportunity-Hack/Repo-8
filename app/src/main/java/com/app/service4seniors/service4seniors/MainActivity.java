@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            Me.getInstance().setType("senior");
             Intent intent = new Intent(MainActivity.this, SeniorDetailActivity.class);
             startActivity(intent);
 

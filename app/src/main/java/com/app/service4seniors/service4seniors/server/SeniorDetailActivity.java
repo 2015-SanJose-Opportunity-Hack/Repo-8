@@ -38,7 +38,7 @@ public class SeniorDetailActivity extends AppCompatActivity implements SensorEve
     private Sensor senAccelerometer;
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 1000;
+    private static final int SHAKE_THRESHOLD = 800;
     private String pid;
 
     private ImageButton diseaseButton;
