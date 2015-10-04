@@ -87,7 +87,7 @@ public class MyGCMListenerService extends GcmListenerService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("GCM Message")
                 .setContentText("LOL")
-                .setSmallIcon(R.drawable.common_signin_btn_icon_dark)
+                .setSmallIcon(R.drawable.icon)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

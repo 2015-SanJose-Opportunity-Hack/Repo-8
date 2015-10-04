@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take medicine"
+        android:textSize="30sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#65B6CB"/>
+
+    <TextView
+        android:id="@+id/task_date"
+        android:layout_below="@+id/task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="09/19/1991"
+        android:layout_marginLeft="20dp"
+        android:textSize="25sp"
+        android:textColor="#65B6CB"/>
+
+    <Button
+        android:id="@+id/done"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:padding="30dp"
+        android:textSize="30sp"
+        android:background="#3D88EC"
+        android:textColor="#FFFFFF"
+        />
+
+</RelativeLayout>
