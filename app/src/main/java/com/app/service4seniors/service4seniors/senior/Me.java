@@ -9,6 +9,7 @@ import java.util.Set;
 public class Me {
     private static Me instance;
 
+
     private String careTaker;
     private String type;
     private String name;
@@ -25,6 +26,7 @@ public class Me {
     public Me(String pid) {
         this.pid = pid;
         this.diseaseList = new HashSet<>();
+        this.careTaker = "fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64";
 
         instance = this;
     }
