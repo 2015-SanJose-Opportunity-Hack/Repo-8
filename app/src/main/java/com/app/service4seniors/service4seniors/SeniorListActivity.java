@@ -14,6 +14,7 @@ import com.app.service4seniors.service4seniors.senior.Me;
 import com.app.service4seniors.service4seniors.senior.Senior;
 import com.app.service4seniors.service4seniors.senior.SeniorListAdapter;
 import com.app.service4seniors.service4seniors.server.NodejsCall;
+import com.app.service4seniors.service4seniors.server.SeniorDetailActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,11 +39,14 @@ public class SeniorListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Senior senior = seniorList.get(position);
-                Intent intent = new Intent();
+                Intent intent = new Intent(SeniorListActivity.this, SeniorDetailActivity.class);
                 intent.putExtra("phone", senior.getPhone());
                 intent.putExtra("pid", senior.getPid());
+                startActivity(intent);
             }
         });
+
+        new SeniorList().execute();
     }
 
     @Override
@@ -64,6 +68,11 @@ public class SeniorListActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.notification) {
+            Intent intent = new Intent(SeniorListActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -71,7 +80,7 @@ public class SeniorListActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            String path = "person/"+ Me.getInstance().getPid() +"/seniors";
+            String path = "/lovedOneAll/"+ Me.getInstance().getPid();
             JSONObject jsonObject = NodejsCall.get(path);
 
             return jsonObject;
@@ -81,15 +90,15 @@ public class SeniorListActivity extends AppCompatActivity {
         protected void onPostExecute(JSONObject jsonObject) {
             Senior senior;
             try {
-                JSONArray jsonArray = jsonObject.getJSONArray("seniors");
-                for(int i=0;i<jsonArray.length();i++) {
+                JSONArray jsonArray = jsonObject.getJSONArray("response");
+                for(int i=0;i<1;i++) {
                     senior = new Senior(jsonArray.getJSONObject(i).getString("name"),
-                            jsonArray.getJSONObject(i).getString("phone"),
+                            jsonArray.getJSONObject(i).getString("seniorphone"),
                             jsonArray.getJSONObject(i).getString("age"),
                             jsonArray.getJSONObject(i).getString("height"),
                             jsonArray.getJSONObject(i).getString("weight"),
                             jsonArray.getJSONObject(i).getString("address"),
-                            jsonArray.getJSONObject(i).getString("pid"));
+                            jsonArray.getJSONObject(i).getString("token"));
 
                     seniorList.add(senior);
                 }

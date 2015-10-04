@@ -49,7 +49,7 @@ public class NotificationAdapter extends BaseAdapter {
         MyViewHolder myViewHolder;
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.senior_list_row, parent, false);
+            convertView = layoutInflater.inflate(R.layout.notification_list_row, parent, false);
             myViewHolder = new MyViewHolder(convertView);
             convertView.setTag(myViewHolder);
         } else {
@@ -57,7 +57,6 @@ public class NotificationAdapter extends BaseAdapter {
         }
 
         Notification notification = notificationList.get(position);
-
         myViewHolder.task.setText(notification.getTask());
         myViewHolder.senior.setText(notification.getSender());
 

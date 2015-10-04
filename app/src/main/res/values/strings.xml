@@ -8,4 +8,12 @@
     <string name="title_activity_senior_detail">SeniorDetailActivity</string>
     <string name="title_activity_notification">NotificationActivity</string>
     <string name="title_activity_senior_pain">SeniorPainActivity</string>
+    <string name="title_activity_disease">DiseaseActivity</string>
+    <string name="dialog_message">Level of Pain</string>
+    <string name="dialog_title">Please Select Level of Pain</string>
+    <string-array name="diseases">
+        <item>Asthma</item>
+        <item>Diabetes</item>
+        <item>Heart problem</item>
+    </string-array>
 </resources>

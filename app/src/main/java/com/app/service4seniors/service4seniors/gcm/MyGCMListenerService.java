@@ -28,8 +28,16 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.app.service4seniors.service4seniors.MainActivity;
+import com.app.service4seniors.service4seniors.NotificationActivity;
 import com.app.service4seniors.service4seniors.R;
+import com.app.service4seniors.service4seniors.senior.Me;
+import com.app.service4seniors.service4seniors.server.SeniorDetailActivity;
 import com.google.android.gms.gcm.GcmListenerService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Set;
 
 public class MyGCMListenerService extends GcmListenerService {
 
@@ -47,21 +55,7 @@ public class MyGCMListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
-
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
         /**
          * In some cases it may be useful to show a notification indicating to the user
@@ -78,19 +72,43 @@ public class MyGCMListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message) {
-        Intent intent = new Intent(this, MainActivity.class);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Intent intent = null;
+        if(!Me.getInstance().getType().equals("senior")) {
+            intent = new Intent(this, NotificationActivity.class);
+        } else {
+            intent = new Intent(this, SeniorDetailActivity.class);
+            intent.putExtra("pid", Me.getInstance().getPid());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("GCM Message")
-                .setContentText("LOL")
-                .setSmallIcon(R.drawable.icon)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+        String msg = "";
+        String date = "";
+        try {
+            msg = jsonObject.getString("msg");
+            date = jsonObject.getString("date");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        NotificationCompat.Builder notificationBuilder = null;
+
+            notificationBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle(msg)
+                    .setContentText(date)
+                    .setSmallIcon(R.drawable.icon)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.app.service4seniors.service4seniors.R;
@@ -63,11 +64,12 @@ public class SeniorListAdapter extends BaseAdapter {
         final Senior senior = seniorList.get(position);
 
         myViewHolder.seniorName.setText(senior.getName());
-        if(senior.isAnyNew()) {
-            myViewHolder.seniorRow.setBackgroundColor(Color.GREEN);
-        } else {
-            myViewHolder.seniorRow.setBackgroundColor(Color.WHITE);
-        }
+
+        //if(senior.isAnyNew()) {
+//            myViewHolder.seniorRow.setBackgroundColor(Color.GREEN);
+//        } else {
+//            myViewHolder.seniorRow.setBackgroundColor(Color.WHITE);
+//        }
 
         myViewHolder.phoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,14 +87,14 @@ public class SeniorListAdapter extends BaseAdapter {
         private ImageView seniorPic;
         private TextView seniorName;
         private ImageView seniorNotification;
-        private LinearLayout seniorRow;
+        private RelativeLayout seniorRow;
         private ImageView phoneButton;
 
         public MyViewHolder(View v) {
             seniorPic = (ImageView) v.findViewById(R.id.senior_pic);
             seniorName = (TextView) v.findViewById(R.id.senior_name);
             seniorNotification = (ImageView) v.findViewById(R.id.senior_notification);
-            seniorRow = (LinearLayout) v.findViewById(R.id.senior_row);
+            seniorRow = (RelativeLayout) v.findViewById(R.id.senior_row);
             phoneButton = (ImageView) v.findViewById(R.id.phone_button);
         }
     }

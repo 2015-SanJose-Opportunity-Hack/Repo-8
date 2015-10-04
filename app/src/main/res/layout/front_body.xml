@@ -1,7 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <View
+        android:id="@+id/frontHeadView"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" />
+    <View
+        android:id="@+id/neckView"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp" />
+    <View
+        android:id="@+id/chestView"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp" />
+    <View
+        android:id="@+id/stomachView"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="170dp" />
+    <View
+        android:id="@+id/leftHandView"
+        android:layout_width="50dp"
+        android:layout_height="130dp"
+        android:background="@drawable/rectangle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="240dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/chestView" />
+    <View
+        android:id="@+id/rightHandView"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="100dp"
+        android:layout_alignTop="@+id/chestView"
+        android:layout_alignBottom="@+id/leftHandView" />
+    <View
+        android:id="@+id/leftThighView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="270dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="130dp" />
+    <View
+        android:id="@+id/rightThighView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="270dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="130dp" />
+    <View
+        android:id="@+id/leftLegView"
+        android:layout_width="30dp"
+        android:layout_height="80dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="360dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="150dp" />
+    <View
+        android:id="@+id/rightLegView"
+        android:layout_width="30dp"
+        android:layout_height="80dp"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="360dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="150dp" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -11,4 +101,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-</LinearLayout>
+
+</RelativeLayout>

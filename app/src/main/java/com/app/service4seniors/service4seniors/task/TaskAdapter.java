@@ -27,7 +27,7 @@ public class TaskAdapter extends BaseAdapter {
     private List<Task> taskList;
 
     public TaskAdapter(Context context, List<Task> taskList) {
-        layoutInflater = LayoutInflater.from(this.context);
+        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.taskList = taskList;
     }
@@ -39,12 +39,12 @@ public class TaskAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return taskList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -63,17 +63,22 @@ public class TaskAdapter extends BaseAdapter {
         final Task task = taskList.get(position);
 
         myViewHolder.taskName.setText(task.getTask());
-        myViewHolder.taskDate.setText(task.getTask());
+        myViewHolder.taskDate.setText(task.getDate());
 
-        myViewHolder.done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myViewHolder.done.setEnabled(false);
-                new TaskDone().execute(task.get_id());
-            }
-        });
+        if(!Me.getInstance().getType().equals("senior")) {
+            myViewHolder.done.setVisibility(View.INVISIBLE);
+        } else {
 
-        return null;
+            myViewHolder.done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myViewHolder.done.setEnabled(false);
+                    new TaskDone().execute(task.get_id());
+                }
+            });
+        }
+
+        return convertView;
     }
 
     private class TaskDone extends AsyncTask<String, Void, JSONObject> {

@@ -19,11 +19,13 @@ package com.app.service4seniors.service4seniors.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.service4seniors.service4seniors.R;
+import com.app.service4seniors.service4seniors.senior.Me;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -53,6 +55,7 @@ public class RegistrationIntentService extends IntentService {
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
+            Me me = new Me(token);
 
             // TODO: Implement this method to send any registration to your app's servers.
             sendRegistrationToServer(token);
