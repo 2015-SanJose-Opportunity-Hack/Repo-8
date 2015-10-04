@@ -36,6 +36,23 @@ router.post('/caretaker', function(req, res){
 });
 
 
+router.get('/caretaker/:token', function(req, res){
+
+	PersonSchema.findOne({token: req.params.token}, function(err, data){
+
+		if(err){
+			console.log("Error getting the caretaker info: " + err);
+			res.json({response: err});
+		}
+		if(data){
+			console.log("Caretaker: " + data);
+			res.json({response: data});
+		}
+		res.json({response: null});
+	});
+});
+
+
 // add a loved one you want to take care of
 router.post('/caretaker/:token/lovedOne', function(req, res){
 
@@ -54,12 +71,12 @@ router.post('/caretaker/:token/lovedOne', function(req, res){
 		}
 
 		console.log("Users :" + data);
-		response.json({response: data});
+		res.json({response: data});
 	});
 });
 
 // get the list of who you care for
-router.get('/lovedOne/:token', function(req, res){
+router.get('/lovedOneAll/:token', function(req, res){
 
 	PersonSchema.findOne({token : req.params.token}, function(err, data){
 
@@ -98,7 +115,6 @@ router.post('/caretaker/:token/lovedOne', function(req, res){
 					console.log(data.seniors);
 				}
 			}
-
 			//save the updated document
 			data.save(function(err, data){
 				if(err){
@@ -113,6 +129,40 @@ router.post('/caretaker/:token/lovedOne', function(req, res){
 		}
 		//send null if user does not exist
 		res.json({response: false});
+	});
+});
+
+
+// get a senior for a caretaker using his/her token
+router.get('/caretaker/:token/lovedOne/:seniortoken', function(req, res){
+
+	PersonSchema.findOne({token: req.params.token}, function(err, data){
+
+		if(err){
+			console.log("Error retrieving the person: " + err);
+			res.json({response: null});
+		}
+		if(data){
+
+				for(var i=0; i<data.seniors.length; i++){
+				if(data.seniors[i].token == req.params.seniortoken){
+
+					var senior = {
+						name: data.seniors[i].name,
+						age: data.seniors[i].age,
+						height: data.seniors[i].height,
+						weight: data.seniors[i].weight,
+						seniorphone: data.seniors[i].seniorphone,
+						diseases: data.seniors[i].diseases,
+						address: data.seniors[i].address
+					}
+
+					res.json({response: senior});
+				}
+			}
+		}//if
+
+		res.json({response: null});
 	});
 });
 
@@ -153,22 +203,25 @@ router.post('/lovedOne/:seniortoken/tasks', function(req, res){
 			res.json({response: false});
 		}
 		
+		//ToDo: Get the sender from the request body
+		var senderToken = "dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80";
 		//create a notificatio n object to save in notification collecttion
 		var notification = {
 
-			msg: req.body.task,
-			sender: req.body.assignee,
-			receiver: req.body.assignedto,
+			msg: "New task: " + req.body.task,
+			sender: "CareTaker",
+			receiver: "cx2M2zTjvtM:APA91bHdNfd2LE063pTNr3nT2BWBWreebgo_03p4WgwKE-kW-7vPwMN9s-dw-lOzGt4TisX945e-QOtBYqIXNCmciOCiz_bNPYgk4isYeyKL2dDlv8bpFQnIEm6QMJc3J8qC59t1_Oro",
 			date: new Date(),
 			notificationtype: "TaskCreated"
 		}
 		// call method to send notification
-		saveNotifications(notification);
+		createTaskNotification(notification);
 
 		console.log(data);
 		res.json({response: true});
 	});
 });
+
 
 
 // get the task list for a senior
@@ -191,7 +244,7 @@ router.get('/lovedOne/:token/tasks', function(req, res){
 // update task status
 router.post("/lovedOne/:token/tasks/:_id/status/:taskstatus", function(req, res){
 
-	var query = {tokenId: req.tasks.token, "_id": req.params._id};
+	var query = {assignedto: req.params.token, "_id": req.params._id};
 	var update = { "$set": { "status": req.params.taskstatus }};
 
 	// update the task status
@@ -207,11 +260,11 @@ router.post("/lovedOne/:token/tasks/:_id/status/:taskstatus", function(req, res)
 		if(data){
 			// create a notification and save it
 			var notification = {
-				msg: data.task,
+				msg: "Task updated: " + data.task,
 				//get the senders id from the tasks metadata
-				sender: data.assignedto,
+				sender: "Mom",
 				//get the receivers id from the tasks metadata
-				receiver: data.assignee,
+				receiver: "dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80",
 				date: new Date(),
 				notificationtype: "TaskUpdate"
 			}
@@ -247,6 +300,7 @@ router.post("/lovedOne/dailychores", function(req, res){
 router.post("/lovedOne/:token/emergency", function(req, res){
 
 	var healthCondition = new HealthConditionSchema(req.body);
+	var token = req.params.token;
 
 	healthCondition.save(function(err, data){
 
@@ -256,9 +310,19 @@ router.post("/lovedOne/:token/emergency", function(req, res){
 		}
 		if(data){
 			console.log("Emergency added");
+
+			var notification = {
+				msg: "Emergency situation alert!",
+				sender: "Mom",
+				receiver: "dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80",
+				date : new Date(),
+				notificationtype: "Emergency"
+			}
+
+			saveNotifications(notification);
 			res.json({response: true});
 		}
-		res.josn({response: null});
+		res.json({response: false});
 	});
 });
 
@@ -278,18 +342,18 @@ router.post("/lovedOne/:token/healthissue", function(req, res){
 			console.log("Health issue added: " + data);
 			//save the notification to be sent to the care taker
 			var notification = {
-				msg: data.description,
-				sender: data.token,
+				msg: data.description + " " + "Severity: "+data.severity,
+				sender: "Mom",
 				//make sure you receive a caretaker's token in the request body
-				receiver: req.body.receiver,
+				receiver: "dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80",
 				date: new Date(),
 				notificationtype: "HealthIssue"
 			}
 			// save the notification to be the sent to the care taker
 			saveNotifications(notification);
-			res.json({response: data});
+			res.json({response: true});
 		}
-		res.json({response: null});
+		res.json({response: false});
 	});
 });
 
@@ -309,11 +373,49 @@ router.get("/person/:token/notifications", function(req, res){
 	});
 });
 
+function createTaskNotification(notificationMsg){
+	var receiverIds = ['cx2M2zTjvtM:APA91bHdNfd2LE063pTNr3nT2BWBWreebgo_03p4WgwKE-kW-7vPwMN9s-dw-lOzGt4TisX945e-QOtBYqIXNCmciOCiz_bNPYgk4isYeyKL2dDlv8bpFQnIEm6QMJc3J8qC59t1_Oro'];
+	var notification = new NotificationSchema(notificationMsg);
+	var notificationMsg = notificationMsg;
+
+	console.log("Notification: " + notification);
+	notification.save(function(err, data){
+		
+		if(err){
+			console.log("Error adding a new notification: ", err);
+		}
+
+		console.log("Notification saved: " + data);
+		//call method to send the notification
+		sendTaskCretedNotification(notification, receiverIds);
+		console.log(data);
+	});
+}
+
+
+function sendTaskCretedNotification(msg, receiver){
+
+	var receiverIds = ['cx2M2zTjvtM:APA91bHdNfd2LE063pTNr3nT2BWBWreebgo_03p4WgwKE-kW-7vPwMN9s-dw-lOzGt4TisX945e-QOtBYqIXNCmciOCiz_bNPYgk4isYeyKL2dDlv8bpFQnIEm6QMJc3J8qC59t1_Oro'];
+	
+	// Set up the sender with you API key
+	var sender = new gcm.Sender('AIzaSyAuoYqHza88PvSEl3dXs8helN9W_T5CiHE');
+
+	var message = new gcm.Message();
+    message.addData('message', msg);
+    
+    // .... without retrying
+    sender.send(message, { registrationIds: receiver }, function (err, result) {
+        if(err) console.error("Error: "+err);
+        else    console.log(result);
+    });
+}
 
 // save notifications to db before sending
 function saveNotifications(notificationMsg){
 
-	var receiverIds = ['fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64'];
+	console.log("Notification saved: " + notificationMsg);
+	//var receiverIds = ['fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64'];
+	var receiverIds = ['dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80'];
 	var notification = new NotificationSchema(notificationMsg);
 	var notificationMsg = notificationMsg;
 
@@ -334,13 +436,14 @@ function saveNotifications(notificationMsg){
 //ToDo: remove static receiver id
 function sendNotification(msg, receiver){
 
-	var receiverIds = ['fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64'];
+	//var receiverIds = ['fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64'];
+	var receiverIds = ['dAzNfQ-2-Gs:APA91bF5-UDBiPdXkfE8fSJWFn63qwYDXgtPDhJFniBzOPUG_gc2jSjxM7LFY6mZ_qgI5WwIMEDMpqxyXWijuYr9ElJXP1zohLN9aDhbNjkCCMQmgfg7casXGpJ3VFLtl9KTY5jnMD80'];
 	console.log("Notification msg: " + msg);
 	// Set up the sender with you API key
 	var sender = new gcm.Sender('AIzaSyAuoYqHza88PvSEl3dXs8helN9W_T5CiHE');
 
 	var message = new gcm.Message();
-    message.addData('key1', { "message" : msg});
+    message.addData('message', msg);
     
     // .... without retrying
     sender.send(message, { registrationIds: receiver }, function (err, result) {

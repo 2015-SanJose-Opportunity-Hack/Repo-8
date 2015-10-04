@@ -1,4 +1,4 @@
-
+	
 var mongoose = require('mongoose');
 
 var SeniorSchema = new mongoose.Schema({
