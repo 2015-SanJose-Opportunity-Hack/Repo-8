@@ -78,7 +78,7 @@ router.get('/lovedOne/:token', function(req, res){
 });
 
 // update the unique token for the client already in db
-router.put('/caretaker/:token/lovedOne', function(req, res){
+router.post('/caretaker/:token/lovedOne', function(req, res){
 
 	PersonSchema.findOne({token: req.params.token}, function(err, data){
 
@@ -160,7 +160,7 @@ router.post('/lovedOne/:seniortoken/tasks', function(req, res){
 			sender: req.body.assignee,
 			receiver: req.body.assignedto,
 			date: new Date(),
-			notificationType: "TaskCreated"
+			notificationtype: "TaskCreated"
 		}
 		// call method to send notification
 		saveNotifications(notification);
@@ -171,10 +171,27 @@ router.post('/lovedOne/:seniortoken/tasks', function(req, res){
 });
 
 
-// update task status
-router.put("/lovedOne/tasks/:_id/status/:taskstatus", function(req, res){
+// get the task list for a senior
+router.get('/lovedOne/:token/tasks', function(req, res){
 
-	var query = {"_id": req.params._id};
+	TasksSchema.find({assignedto: req.params.token}, function(err, data){
+
+		if(err){
+			console.log("Error retrieving the task list: " + err);
+			res.json({response: null});
+		}
+		if(data){
+
+			console.log("Tasks : " + data);
+			res.json({response: data});
+		}
+	});
+});
+
+// update task status
+router.post("/lovedOne/:token/tasks/:_id/status/:taskstatus", function(req, res){
+
+	var query = {tokenId: req.tasks.token, "_id": req.params._id};
 	var update = { "$set": { "status": req.params.taskstatus }};
 
 	// update the task status
@@ -196,7 +213,7 @@ router.put("/lovedOne/tasks/:_id/status/:taskstatus", function(req, res){
 				//get the receivers id from the tasks metadata
 				receiver: data.assignee,
 				date: new Date(),
-				notificationType: "TaskUpdate"
+				notificationtype: "TaskUpdate"
 			}
 
 			saveNotifications(notification);
@@ -211,7 +228,6 @@ router.put("/lovedOne/tasks/:_id/status/:taskstatus", function(req, res){
 });
 
 
-
 //send general info about daily chores
 router.post("/lovedOne/dailychores", function(req, res){
 
@@ -220,7 +236,7 @@ router.post("/lovedOne/dailychores", function(req, res){
 		sender: "6693008325",
 		receiver: "6694003333",
 		date: new Date(),
-		notificationType: "DailyChore"
+		notificationtype: "DailyChore"
 	}
 
 	saveNotifications(notification);
@@ -228,8 +244,27 @@ router.post("/lovedOne/dailychores", function(req, res){
 });
 
 
+router.post("/lovedOne/:token/emergency", function(req, res){
+
+	var healthCondition = new HealthConditionSchema(req.body);
+
+	healthCondition.save(function(err, data){
+
+		if(err){
+			console.log("Error updating emergency: " + err);
+			res.json({response: false});
+		}
+		if(data){
+			console.log("Emergency added");
+			res.json({response: true});
+		}
+		res.josn({response: null});
+	});
+});
+
+
 // post a health related issue
-router.post("/lovedOne/healthissue", function(req, res){
+router.post("/lovedOne/:token/healthissue", function(req, res){
 
 	var healthCondition = new HealthConditionSchema(req.body);
 
@@ -245,17 +280,34 @@ router.post("/lovedOne/healthissue", function(req, res){
 			var notification = {
 				msg: data.description,
 				sender: data.token,
+				//make sure you receive a caretaker's token in the request body
 				receiver: req.body.receiver,
 				date: new Date(),
-				notificationType: "HealthIssue"
+				notificationtype: "HealthIssue"
 			}
 			// save the notification to be the sent to the care taker
 			saveNotifications(notification);
 			res.json({response: data});
 		}
+		res.json({response: null});
 	});
 });
 
+//common API for retrieving notifications for caretaker as well as senior person
+router.get("/person/:token/notifications", function(req, res){
+
+	NotificationSchema.find({ receiver: req.params.token }, function(err, data){
+		if(err){
+			console.log("Error getting the notifications: " + err);
+			res.json({response: null});
+		}
+		if(data){
+			console.log("Notifications: " + data);
+			res.json({response: data});
+		}
+		res.json({response: null});
+	});
+});
 
 
 // save notifications to db before sending
@@ -279,17 +331,16 @@ function saveNotifications(notificationMsg){
 }
 
 
-
 //ToDo: remove static receiver id
 function sendNotification(msg, receiver){
 
 	var receiverIds = ['fzaEygfKndE:APA91bHGtDPcEzY-al9NCF7mHEdJiCdblVg85-0LPW1zUc-AQwn-Th_yozWPmtkOyTfbUPi2sn9gHI2URx5fXsKQub8VkbWlQukYZdoFxqlYg7mkiQu5sou5lwJPm0SOaI6Sz_WUEF64'];
-	console.log("Notiication msg: " + msg);
+	console.log("Notification msg: " + msg);
 	// Set up the sender with you API key
 	var sender = new gcm.Sender('AIzaSyAuoYqHza88PvSEl3dXs8helN9W_T5CiHE');
 
 	var message = new gcm.Message();
-    message.addData('key1', { "message" : msg, type: msg.taskType });
+    message.addData('key1', { "message" : msg});
     
     // .... without retrying
     sender.send(message, { registrationIds: receiver }, function (err, result) {
