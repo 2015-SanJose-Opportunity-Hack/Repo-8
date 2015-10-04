@@ -76,6 +76,10 @@
             android:name=".senior.SeniorPainActivity"
             android:label="@string/title_activity_senior_pain" >
         </activity>
+        <activity
+            android:name=".DiseaseActivity"
+            android:label="@string/title_activity_disease" >
+        </activity>
     </application>
 
 </manifest>

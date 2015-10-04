@@ -68,6 +68,11 @@ public class SeniorListActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.notification) {
+            Intent intent = new Intent(SeniorListActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

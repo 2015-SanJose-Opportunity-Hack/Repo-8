@@ -31,6 +31,8 @@ public class NotificationActivity extends AppCompatActivity {
 
         notificationList = new ArrayList<>();
         notificationListView = (ListView) findViewById(R.id.notification_list);
+
+        new NotificationList().execute();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            String url = "/caretaker/" + Me.getInstance().getPid() + "/notification";
+            String url = "/person/" + Me.getInstance().getPid() + "/notifications";
             JSONObject jsonObject = NodejsCall.get(url);
             return jsonObject;
         }
@@ -58,7 +60,7 @@ public class NotificationActivity extends AppCompatActivity {
                     notification = new Notification(notificationArray.getJSONObject(i).getString("msg"),
                             notificationArray.getJSONObject(i).getString("date"),
                             notificationArray.getJSONObject(i).getString("sender"),
-                            notificationArray.getJSONObject(i).getString("reciever"),
+                            "",
                             notificationArray.getJSONObject(i).getString("type"));
 
                     notificationList.add(notification);
