@@ -91,7 +91,7 @@ public class SeniorListActivity extends AppCompatActivity {
             Senior senior;
             try {
                 JSONArray jsonArray = jsonObject.getJSONArray("response");
-                for(int i=0;i<jsonArray.length();i++) {
+                for(int i=0;i<1;i++) {
                     senior = new Senior(jsonArray.getJSONObject(i).getString("name"),
                             jsonArray.getJSONObject(i).getString("seniorphone"),
                             jsonArray.getJSONObject(i).getString("age"),

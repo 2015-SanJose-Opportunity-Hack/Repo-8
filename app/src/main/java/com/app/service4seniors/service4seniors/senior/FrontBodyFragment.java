@@ -1,6 +1,7 @@
 package com.app.service4seniors.service4seniors.senior;
 
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +15,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.app.service4seniors.service4seniors.R;
+import com.app.service4seniors.service4seniors.server.NodejsCall;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 
 /**
@@ -118,6 +125,34 @@ public class FrontBodyFragment extends Fragment  {
             return true;
         }
 
+    }
+
+    private class PainPoint extends AsyncTask<Void, Void, JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            JSONObject jsonObject1 = new JSONObject();
+            String url = "/lovedOne/" + Me.getInstance().getPid() + "/healthissue";
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("type", "Body pain");
+                jsonObject.put("description", bodyPart);
+                jsonObject.put("severity", painlevel);
+                jsonObject.put("date", new Date());
+                jsonObject.put("token", Me.getInstance().getPid());
+
+                jsonObject1 = NodejsCall.post(url, jsonObject);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonObject1;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+
+        }
     }
 
     public void touchDown(View v){
