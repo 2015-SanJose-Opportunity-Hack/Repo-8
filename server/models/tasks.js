@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var TasksSchema = new mongoose.Schema({
 	
+	tokenId: {type: String},
 	assignee: {type: String},
 	assignedto: {type: String},
 	task: {type: String},

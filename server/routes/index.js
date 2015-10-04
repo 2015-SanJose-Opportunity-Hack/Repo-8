@@ -37,31 +37,20 @@ router.post('/caretaker', function(req, res){
 
 
 // add a loved one you want to take care of
-router.post('/lovedOne', function(req, res){
+router.post('/caretaker/:token/lovedOne', function(req, res){
 
-	var lovedOne = new PersonSchema(req.body);
-	lovedOne.save(function(err, data){
-		console.log(req.body);
-		
-		if(err){
-			console.log("Error adding a loved one: ", err);
-			res.json({response: false});
-		}
-		else{
-			console.log(data);
-			res.json({response: true});
-		}
-	});
-});
+	var query = { token: req.params.token };
+	var update = {"$push": { seniors: req.body } };
 
-// get the list of who you care for
-router.get('/lovedOne', function(req, res){
-
-	PersonSchema.findOne({pid: req.body.pid}, function(err, data){
+	PersonSchema.update(query, update, function(err, data){
 
 		if(err) {
-			console.log("Error in retrieving users: " +  err);
+			console.log("Error in adding a senior: " +  err);
 			res.json({response: null});
+		}
+		if(data){
+			console.log("Senior added: " + data);
+			res.json({response: data});
 		}
 
 		console.log("Users :" + data);
@@ -69,30 +58,91 @@ router.get('/lovedOne', function(req, res){
 	});
 });
 
+// get the list of who you care for
+router.get('/lovedOne/:token', function(req, res){
+
+	PersonSchema.findOne({token : req.params.token}, function(err, data){
+
+		if(err){
+			console.log("Error retrieving the seniors : " + err);
+			res.json({response: null});
+		}
+		if(data){
+			console.log(data);
+			console.log(data.seniors);
+			res.json({response: data.seniors});
+		}
+		res.json({response: null});
+	});
+
+});
+
 // update the unique token for the client already in db
-router.put('/lovedOne/:phone', function(req, res){
+router.put('/caretaker/:token/lovedOne', function(req, res){
 
-	var query = {phone: req.params.phone};
-	var update = { "$set" : { "token": req.body.token } }
-	var options = {"new" : true, "upsert": true};
-
-	PersonSchema.findOneAndUpdate(query, update, options, function(err, data){
+	PersonSchema.findOne({token: req.params.token}, function(err, data){
 
 		if(err){
 			console.log("Error updating the token: " + err);
 			res.json({response: null});
 		}
 		if(data){
-			console.log("Token updated: " + data);
-			res.json({response: data});
+			console.log("Caretaker : " + data);
+			console.log(data.seniors.length);
+			
+			for(var i=0; i<data.seniors.length; i++){
+
+				if(data.seniors[i].seniorphone == req.body.seniorphone){
+
+					data.seniors[i].token = req.body.seniortoken;
+					console.log(data.seniors);
+				}
+			}
+
+			//save the updated document
+			data.save(function(err, data){
+				if(err){
+					console.log("Token update error: " + err);
+				}
+				if(data){
+					console.log("Token updated: " + data);	
+					res.json({response: true});				
+				}
+				res.json({response: false});
+			});
 		}
 		//send null if user does not exist
+		res.json({response: false});
+	});
+});
+
+// get the diseases for a senior using his token 
+router.get('/caretaker/:token/lovedOne/:seniortoken/diseases', function(req, res){
+
+	PersonSchema.findOne({token: req.params.token}, function(err, data){
+
+		if(err){
+			console.log("Error retrieving the caretaker :" + err);
+			res.json({response: null});
+		}
+		if(data){
+
+			for(var i=0; i<data.seniors.length; i++){
+				if(data.seniors[i].token == req.params.seniortoken){
+
+					console.log(data.seniors[i].diseases);
+					res.json({response: data.seniors[i].diseases});
+				}
+				res.json({response: null});
+			}
+		}
+
 		res.json({response: null});
 	});
 });
 
 //create a new task for your loved one
-router.post('/lovedOne/tasks', function(req, res){
+router.post('/lovedOne/:seniortoken/tasks', function(req, res){
 
 	var task = new TasksSchema(req.body);
 	task.save(function(err, data){
@@ -110,7 +160,7 @@ router.post('/lovedOne/tasks', function(req, res){
 			sender: req.body.assignee,
 			receiver: req.body.assignedto,
 			date: new Date(),
-			notificationType: "task"
+			notificationType: "TaskCreated"
 		}
 		// call method to send notification
 		saveNotifications(notification);
@@ -146,7 +196,7 @@ router.put("/lovedOne/tasks/:_id/status/:taskstatus", function(req, res){
 				//get the receivers id from the tasks metadata
 				receiver: data.assignee,
 				date: new Date(),
-				notificationType: "task update"
+				notificationType: "TaskUpdate"
 			}
 
 			saveNotifications(notification);
@@ -161,6 +211,7 @@ router.put("/lovedOne/tasks/:_id/status/:taskstatus", function(req, res){
 });
 
 
+
 //send general info about daily chores
 router.post("/lovedOne/dailychores", function(req, res){
 
@@ -169,7 +220,7 @@ router.post("/lovedOne/dailychores", function(req, res){
 		sender: "6693008325",
 		receiver: "6694003333",
 		date: new Date(),
-		notificationType: "Daily chore"
+		notificationType: "DailyChore"
 	}
 
 	saveNotifications(notification);
@@ -196,7 +247,7 @@ router.post("/lovedOne/healthissue", function(req, res){
 				sender: data.token,
 				receiver: req.body.receiver,
 				date: new Date(),
-				notificationType: "Health Issue"
+				notificationType: "HealthIssue"
 			}
 			// save the notification to be the sent to the care taker
 			saveNotifications(notification);
