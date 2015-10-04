@@ -9,30 +9,32 @@
     <LinearLayout
         android:id="@+id/upper"
         android:layout_width="match_parent"
-        android:layout_height="350px"
-        android:padding="2dp">
+        android:layout_height="350px">
 
         <ImageButton
-            android:id="@+id/body_pain"
+            android:id="@+id/body_pain_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/body"
             android:adjustViewBounds="true"
+            android:background="#FFFFFF"
 
             android:scaleType="fitCenter"
 
             />
 
         <ImageButton
-            android:id="@+id/disease"
+            android:id="@+id/disease_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/disease"
+            android:src="@drawable/disease"
             android:adjustViewBounds="true"
-            android:background="#3F51B5"
-            android:scaleType="fitCenter"/>
+            android:background="#FFFFFF"
+            android:scaleType="fitCenter"
+            android:padding="12dp"
+            />
 
     </LinearLayout>
 

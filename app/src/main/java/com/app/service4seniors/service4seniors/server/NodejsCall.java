@@ -26,7 +26,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 public class NodejsCall {
-    public static String SERVER = "http://172.16.0.11:3000";
+    public static String SERVER = "http://192.168.85.90:3000";
 
     public static JSONObject get(String path){
         String urlString = SERVER + path;

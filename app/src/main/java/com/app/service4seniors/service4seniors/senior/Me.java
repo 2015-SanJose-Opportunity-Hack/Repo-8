@@ -9,6 +9,7 @@ import java.util.Set;
 public class Me {
     private static Me instance;
 
+    private String careTaker;
     private String type;
     private String name;
     private String phone;
@@ -21,15 +22,7 @@ public class Me {
     private boolean isAnyNew;
     private String pid;
 
-    public Me(String type, String name, String phone, String age, String height, String weight,
-              String address, String pid) {
-        this.type = type;
-        this.name = name;
-        this.phone = phone;
-        this.age = age;
-        this.height = height;
-        this.weight = weight;
-        this.address = address;
+    public Me(String pid) {
         this.pid = pid;
         this.diseaseList = new HashSet<>();
 
@@ -137,5 +130,13 @@ public class Me {
             diseaseList.add(diseases[i]);
         }
 
+    }
+
+    public String getCareTaker() {
+        return careTaker;
+    }
+
+    public void setCareTaker(String careTaker) {
+        this.careTaker = careTaker;
     }
 }

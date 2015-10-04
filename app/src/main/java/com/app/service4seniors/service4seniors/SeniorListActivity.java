@@ -71,7 +71,7 @@ public class SeniorListActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            String path = "person/"+ Me.getInstance().getPid() +"/seniors";
+            String path = "caretaker/"+ Me.getInstance().getPid();
             JSONObject jsonObject = NodejsCall.get(path);
 
             return jsonObject;
