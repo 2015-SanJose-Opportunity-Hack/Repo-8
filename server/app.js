@@ -10,7 +10,7 @@ mongoose.connect('mongodb://remotecare:remotecare@ds029224.mongolab.com:29224/re
 require('./models/person');
 require('./models/notifications');
 require('./models/tasks');
-
+require('./models/healthcondition');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

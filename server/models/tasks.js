@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var TasksSchema = new mongoose.Schema({
 	
 	assignee: {type: String},
-	assignedTo: {type: String},
+	assignedto: {type: String},
 	task: {type: String},
 	date: {type: String},
 	status: {type: String},

@@ -2,6 +2,8 @@
 var mongoose = require('mongoose');
 
 var PersonSchema = new mongoose.Schema({
+
+	token: {type: String},
 	name: {type: String},
 	phone: {type: String},
 	email: {type: String},
